@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق الاختبار</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1, h2, h3 {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question h3 {
+            margin-bottom: 10px;
+        }
+
+        .question input {
+            margin-right: 10px;
+        }
+
+        .leaderboard {
+            margin-top: 20px;
+        }
+
+        .leaderboard ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .leaderboard li {
+            background: #eee;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="signup-section">
+            <h1>إنشاء حساب</h1>
+            <div class="form-group">
+                <label for="username-signup">اسم المستخدم:</label>
+                <input type="text" id="username-signup">
+            </div>
+            <div class="form-group">
+                <label for="password-signup">كلمة المرور:</label>
+                <input type="password" id="password-signup">
+            </div>
+            <button class="btn" onclick="signup()">إنشاء حساب</button>
+        </div>
+
+        <div id="login-section" style="display:none;">
+            <h1>تسجيل الدخول</h1>
+            <div class="form-group">
+                <label for="username-login">اسم المستخدم:</label>
+                <input type="text" id="username-login">
+            </div>
+            <div class="form-group">
+                <label for="password-login">كلمة المرور:</label>
+                <input type="password" id="password-login">
+            </div>
+            <button class="btn" onclick="login()">تسجيل الدخول</button>
+        </div>
+
+        <div id="quiz-section" style="display:none;">
+            <h1>اختبار في المعلومات الإسلامية والمملكة العربية السعودية</h1>
+            <form id="quiz-form">
+                <div class="question">
+                    <h3>1. من هو أول خليفة في الإسلام؟</h3>
+                    <input type="radio" name="q1" value="أبو بكر الصديق"> أبو بكر الصديق<br>
+                    <input type="radio" name="q1" value="عمر بن الخطاب"> عمر بن الخطاب<br>
+                    <input type="radio" name="q1" value="عثمان بن عفان"> عثمان بن عفان<br>
+                    <input type="radio" name="q1" value="علي بن أبي طالب"> علي بن أبي طالب
+                </div>
+                <!-- Add more questions similarly -->
+                <!-- ... -->
+                <div class="question">
+                    <h3>20. ما هو اسم العملة الرسمية في المملكة العربية السعودية؟</h3>
+                    <input type="radio" name="q20" value="دينار"> دينار<br>
+                    <input type="radio" name="q20" value="درهم"> درهم<br>
+                    <input type="radio" name="q20" value="ريال"> ريال<br>
+                    <input type="radio" name="q20" value="جنيه"> جنيه
+                </div>
+                <button class="btn" type="button" onclick="submitQuiz()">إرسال الإجابات</button>
+            </form>
+        </div>
+
+        <div id="leaderboard-section" style="display:none;">
+            <h1>النتائج</h1>
+            <div id="user-score"></div>
+            <h2>لوحة المتصدرين</h2>
+            <div class="leaderboard">
+                <ul id="leaderboard-list"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const users = {};
+        let currentUser = null;
+
+        function signup() {
+            const username = document.getElementById('username-signup').value;
+            const password = document.getElementById('password-signup').value;
+
+            if (username && password) {
+                if (users[username]) {
+                    alert('اسم المستخدم موجود مسبقًا.');
+                } else {
+                    users[username] = { password: password, score: 0 };
+                    alert('تم إنشاء الحساب بنجاح.');
+                    document.getElementById('signup-section').style.display = 'none';
+                    document.getElementById('login-section').style.display = 'block';
+                }
+            } else {
+                alert('يرجى ملء جميع الحقول.');
+            }
+        }
+
+        function login() {
+            const username = document.getElementById('username-login').value;
+            const password = document.getElementById('password-login').value;
+
+            if (users[username] && users[username].password === password) {
+                currentUser = username;
+                alert('تم تسجيل الدخول بنجاح.');
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('quiz-section').style.display = 'block';
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيحة.');
+            }
+        }
+
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const formData = new FormData(form);
+            let score = 0;
+
+            const correctAnswers = {
+                q1: 'أبو بكر الصديق',
+                // Add correct answers for other questions here
+                // ...
+                q20: 'ريال'
+            };
+
+            for (let [question, answer] of formData.entries()) {
+                if (correctAnswers[question] === answer) {
+                    score++;
+                }
+            }
+
+            users[currentUser].score = score;
+            displayLeaderboard();
+        }
+
+        function displayLeaderboard() {
+            const leaderboardList = document.getElementById('leaderboard-list');
+            leaderboardList.innerHTML = '';
+
+            const sortedUsers = Object.entries(users).sort((a, b) => b[1].score - a[1].score);
+
+            sortedUsers.forEach(([username, data]) => {
+                const li = document.createElement('li');
+                li.textContent = ${username}: ${data.score};
+                leaderboardList.appendChild(li);
+            });
+
+            document.getElementById('quiz-section').style.display = 'none';
+            document.getElementById('leaderboard-section').style.display = 'block';
+            document.getElementById('user-score').textContent = درجتك: ${users[currentUser].score};
+        }
+    </script>
+</body>
+</html>
